@@ -1,15 +1,36 @@
 {
 	"variables": [],
 	"info": {
-		"name": "TCGPlayer",
+		"name": "Service API Helper",
 		"_postman_id": "f36c019c-32fa-72d4-88fd-57ae2ba74dfd",
-		"description": "All of the requests usable through the current TCGPlayer API",
+		"description": "API request collection for marketplace services",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Authenticate",
 			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Auto-fill publicId and privateId based on selectedStore",
+							"var selectedStore = pm.environment.get('selectedStore');",
+							"if (selectedStore) {",
+							"    var publicId = pm.environment.get(selectedStore + '_publicId');",
+							"    var privateId = pm.environment.get(selectedStore + '_privateId');",
+							"    ",
+							"    if (publicId) {",
+							"        pm.environment.set('publicId', publicId);",
+							"    }",
+							"    if (privateId) {",
+							"        pm.environment.set('privateId', privateId);",
+							"    }",
+							"}"
+						]
+					}
+				},
 				{
 					"listen": "test",
 					"script": {

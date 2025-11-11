@@ -1,27 +1,57 @@
-# Postman-Api
-This repository contains two files.  The first, TCGPlayer.postman_collection.json, is a Postman (https://www.getpostman.com) collection file that contains all of the current API requests.  The second file, TCGPlayer.postman_environment, contains a set of environment variables that will need to be set and configured to get the collection to work.
+# Service API Helper
 
-First you will need to import both of these files into Postman.  After that is done, modify the environment variables to match your credentials.  The ones that need to be modified are:
-publicId- this is the public key that you were given when receiving API access
-privateId- this is the private key that you were given when receiving API access
+This repository contains two files:
+- `service_api_helper.postman_collection.json` - A Postman (https://www.getpostman.com) collection file that contains all API requests
+- `service_api_helper.postman_environment` - Environment variables configuration
 
-The rest of the fields will populate from scripts through the various requests.  storeAuthorizationCode is part of the Store Authorization workflow present in the [main documentation](https://docs.tcgplayer.com/docs/store-authorization-workflow).
+## Setup Instructions
 
-# Getting started with TCGPlayer Postman requests
-After your keys are entered into the imported environment, there are two paths to follow depending on if you want to authenticate against a store.  This is only necessary if your application will be interacting with store objects, such as by pulling a store's orders.
+1. **Import files into Postman**
+   - Import both the collection and environment files
 
-If you don't want to authenticate against a store, skip to step 4.
+2. **Configure Store Credentials**
 
-### 1)
-Follow the [store authorization workflow](https://docs.tcgplayer.com/docs/store-authorization-workflow) until you have generated a store's authorization code.
-### 2)
-Enter this code into your Postman environment under the storeAuthorizationCode variable.
-### 3)
-Run the request for Store Authorization.  You don't need to copy anything from the response, the script handles it and loads the appropriate environment variables.
-### 4)
-Run the request for Authenticate.
+   The environment now supports **multiple stores with auto-fill functionality**:
 
-After this is completed, you should be able to start diving in and running any of the other requests in the collection.  If you authenticated against a store, a great next step is to call Get Store Info so that you can verify that your store's information is returned correctly.
+   - `selectedStore` - Choose which store to use (store1, store2, or store3)
+   - `store1_publicId` / `store1_privateId` - Credentials for Store 1
+   - `store2_publicId` / `store2_privateId` - Credentials for Store 2
+   - `store3_publicId` / `store3_privateId` - Credentials for Store 3
+
+   **How Auto-Fill Works:**
+   - Set your credentials for each store (store1_publicId, store1_privateId, etc.)
+   - Change `selectedStore` to choose which store to use
+   - When you run the **Authenticate** request, it automatically loads the correct credentials based on your selection
+
+The rest of the fields will populate from scripts through the various requests. `storeAuthorizationCode` is part of the Store Authorization workflow present in the [main documentation](https://docs.tcgplayer.com/docs/store-authorization-workflow).
+
+# Getting Started
+
+After configuring your credentials in the environment:
+
+## Authentication Workflow
+
+### Option A: Store Authentication (Required for store-specific operations)
+
+If your application needs to interact with store objects (orders, inventory, etc.):
+
+1. Follow the [store authorization workflow](https://docs.tcgplayer.com/docs/store-authorization-workflow) to generate a store's authorization code
+2. Enter this code into the `storeAuthorizationCode` environment variable
+3. Run the **Store Authorization** request (the script automatically loads the authorization key)
+4. Run the **Authenticate** request (credentials auto-fill based on your `selectedStore` selection)
+
+After authentication, test by calling **Get Store Info** to verify your store information.
+
+### Option B: Basic Authentication (No store access needed)
+
+If you only need general API access:
+
+1. Simply run the **Authenticate** request (credentials auto-fill based on your `selectedStore` selection)
+2. You can now access non-store-specific endpoints in the collection
+
+## Switching Between Stores
+
+To switch stores, simply change the `selectedStore` environment variable to `store1`, `store2`, or `store3`, then re-run the **Authenticate** request. Your credentials will automatically update.
 
 # Payment & Payout Endpoints
 
@@ -83,11 +113,13 @@ Cancel pending or scheduled payouts that haven't been processed yet. Requires ca
 ---
 
 # Notes
-This postman collection is currently updated for version 1.9.0 of the TCGPlayer API.  When a new version come out this section will be updated and the collection will also be updated.
 
-If you have any questions please feel free to reach out on our [community forums](https://community.tcgplayer.com)!
+- This collection is currently configured for API version 1.9.0
+- The environment supports up to 3 different stores with automatic credential switching
+- All store-specific requests require proper authentication through the Store Authorization workflow
 
+For questions and support, please refer to the [TCGPlayer community forums](https://community.tcgplayer.com).
 
+---
 
-
-Repository published by Joshua Burdick, Developer Evangelist at TCGPlayer.com
+**Original Repository:** Published by Joshua Burdick, Developer Evangelist at TCGPlayer.com
