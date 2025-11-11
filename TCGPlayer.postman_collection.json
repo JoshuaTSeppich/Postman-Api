@@ -2103,6 +2103,261 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "Accept Push Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"if (typeof jsonResponse.results !== 'undefined' && jsonResponse.results.length > 0) {",
+							"    console.log('Push payment accepted successfully');",
+							"    console.log('Payment ID: ' + jsonResponse.results[0].paymentId);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payments/push/accept",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"paymentId\": \"PAY-12345678\",\n\t\"amount\": 150.50,\n\t\"currency\": \"USD\",\n\t\"paymentMethod\": \"push\",\n\t\"paymentSource\": {\n\t\t\"type\": \"bank_transfer\",\n\t\t\"accountLast4\": \"1234\",\n\t\t\"routingNumber\": \"021000021\"\n\t},\n\t\"metadata\": {\n\t\t\"orderId\": \"ORD-98765\",\n\t\t\"description\": \"Payment for order #98765\",\n\t\t\"customerId\": \"CUST-54321\"\n\t},\n\t\"acceptedAt\": \"2025-11-11T10:30:00Z\",\n\t\"notes\": \"Manual push payment acceptance\"\n}"
+				},
+				"description": "Accept an incoming push payment for a store. Push payments are initiated by the payer and pushed to the store's account. This endpoint allows stores to accept and record these incoming payments."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Manual Payout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"if (typeof jsonResponse.results !== 'undefined' && jsonResponse.results.length > 0) {",
+							"    console.log('Manual payout created successfully');",
+							"    console.log('Payout ID: ' + jsonResponse.results[0].payoutId);",
+							"    console.log('Status: ' + jsonResponse.results[0].status);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/manual",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 500.00,\n\t\"currency\": \"USD\",\n\t\"destination\": {\n\t\t\"type\": \"bank_account\",\n\t\t\"accountNumber\": \"123456789\",\n\t\t\"routingNumber\": \"021000021\",\n\t\t\"accountHolderName\": \"Store Owner Name\",\n\t\t\"bankName\": \"Chase Bank\"\n\t},\n\t\"payoutReason\": \"weekly_settlement\",\n\t\"description\": \"Manual payout for week ending 2025-11-11\",\n\t\"metadata\": {\n\t\t\"period\": \"2025-11-04 to 2025-11-11\",\n\t\t\"orderCount\": 45,\n\t\t\"processedBy\": \"admin\"\n\t},\n\t\"scheduledDate\": \"2025-11-12\",\n\t\"notifyRecipient\": true,\n\t\"notes\": \"Weekly manual payout processing\"\n}"
+				},
+				"description": "Create a manual payout for a store. This allows administrators to manually initiate payouts to store owners for settled transactions. The payout can be scheduled for immediate or future processing."
+			},
+			"response": []
+		},
+		{
+			"name": "List Store Payouts",
+			"request": {
+				"url": {
+					"raw": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts?status=pending&limit=50&offset=0",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"stores",
+						"{{storeKey}}",
+						"payouts"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "pending",
+							"equals": true,
+							"description": "Filter by payout status: pending, processing, completed, failed, cancelled"
+						},
+						{
+							"key": "limit",
+							"value": "50",
+							"equals": true,
+							"description": "Number of results to return"
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"equals": true,
+							"description": "Offset for pagination"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Retrieve a list of payouts for a store. Supports filtering by status, date range, and pagination. Returns payout history including amount, status, destination, and processing details."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Payout Details",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/PAYOUT-12345",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get detailed information about a specific payout including transaction details, status, destination account, processing timestamps, and any associated fees or adjustments."
+			},
+			"response": []
+		},
+		{
+			"name": "List Store Payments",
+			"request": {
+				"url": {
+					"raw": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payments?paymentMethod=push&limit=50&offset=0",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"stores",
+						"{{storeKey}}",
+						"payments"
+					],
+					"query": [
+						{
+							"key": "paymentMethod",
+							"value": "push",
+							"equals": true,
+							"description": "Filter by payment method: push, pull, card, bank_transfer"
+						},
+						{
+							"key": "limit",
+							"value": "50",
+							"equals": true,
+							"description": "Number of results to return"
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"equals": true,
+							"description": "Offset for pagination"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Retrieve a list of payments received by the store. Supports filtering by payment method, date range, and status. Returns payment history including amounts, sources, and acceptance details."
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel Manual Payout",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/PAYOUT-12345/cancel",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"reason\": \"incorrect_amount\",\n\t\"notes\": \"Payout amount needs to be corrected\"\n}"
+				},
+				"description": "Cancel a pending or scheduled manual payout. Only payouts that have not yet been processed can be cancelled. Requires a cancellation reason."
+			},
+			"response": []
 		}
 	]
 }

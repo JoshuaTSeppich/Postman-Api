@@ -23,6 +23,65 @@ Run the request for Authenticate.
 
 After this is completed, you should be able to start diving in and running any of the other requests in the collection.  If you authenticated against a store, a great next step is to call Get Store Info so that you can verify that your store's information is returned correctly.
 
+# Payment & Payout Endpoints
+
+This collection now includes comprehensive payment and payout management endpoints:
+
+## Accept Push Payment
+**POST** `/v1.9.0/stores/{storeKey}/payments/push/accept`
+
+Accept incoming push payments initiated by payers. Supports bank transfers and other push payment methods.
+
+**Key Features:**
+- Record payment source information (bank account, routing number)
+- Link payments to orders and customers via metadata
+- Timestamp payment acceptance
+- Add custom notes for record-keeping
+
+## Create Manual Payout
+**POST** `/v1.9.0/stores/{storeKey}/payouts/manual`
+
+Manually initiate payouts to store owners for settled transactions.
+
+**Key Features:**
+- Specify destination bank account details
+- Schedule payouts for immediate or future processing
+- Set payout reason (weekly_settlement, etc.)
+- Include metadata for tracking (order count, processing period)
+- Optional email notification to recipient
+
+## List Store Payouts
+**GET** `/v1.9.0/stores/{storeKey}/payouts`
+
+Retrieve payout history with filtering options.
+
+**Query Parameters:**
+- `status`: pending, processing, completed, failed, cancelled
+- `limit`: Number of results (default 50)
+- `offset`: Pagination offset
+
+## Get Payout Details
+**GET** `/v1.9.0/stores/{storeKey}/payouts/{payoutId}`
+
+Get detailed information about a specific payout including transaction details, fees, and processing timestamps.
+
+## List Store Payments
+**GET** `/v1.9.0/stores/{storeKey}/payments`
+
+Retrieve payment history with filtering by payment method, date range, and status.
+
+**Query Parameters:**
+- `paymentMethod`: push, pull, card, bank_transfer
+- `limit`: Number of results (default 50)
+- `offset`: Pagination offset
+
+## Cancel Manual Payout
+**POST** `/v1.9.0/stores/{storeKey}/payouts/{payoutId}/cancel`
+
+Cancel pending or scheduled payouts that haven't been processed yet. Requires cancellation reason.
+
+---
+
 # Notes
 This postman collection is currently updated for version 1.9.0 of the TCGPlayer API.  When a new version come out this section will be updated and the collection will also be updated.
 
