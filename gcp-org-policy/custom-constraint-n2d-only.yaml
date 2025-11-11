@@ -1,0 +1,9 @@
+name: organizations/ORGANIZATION_ID/customConstraints/custom.createOnlyN2DVMs
+displayName: "Only N2D VMs allowed"
+description: "Restrict all VMs created to only use N2D machine types"
+resourceTypes:
+  - compute.googleapis.com/Instance
+methodTypes:
+  - CREATE
+condition: "resource.machineType.contains('/machineTypes/n2d')"
+actionType: ALLOW

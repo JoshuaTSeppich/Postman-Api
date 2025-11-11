@@ -82,6 +82,49 @@ Cancel pending or scheduled payouts that haven't been processed yet. Requires ca
 
 ---
 
+# Google Cloud Organization Policy
+
+This repository includes configuration and scripts for deploying a custom Google Cloud Organization Policy that restricts Compute Engine VM creation to only N2D machine types.
+
+## What's Included
+
+The `gcp-org-policy/` directory contains:
+
+- **YAML Configuration**: Custom constraint definition for N2D-only enforcement
+- **Bash Script**: Automated deployment using gcloud CLI
+- **Python Script**: Programmatic deployment using Google Cloud SDK
+- **Terraform Example**: Infrastructure as Code approach
+- **Comprehensive Documentation**: Setup guide, testing procedures, and troubleshooting
+
+## Quick Start
+
+```bash
+# Using the bash script
+cd gcp-org-policy
+export ORGANIZATION_ID="123456789012"
+./deploy-n2d-constraint.sh
+
+# Or using Python
+pip install google-cloud-org-policy
+python deploy_constraint.py --organization-id 123456789012
+
+# Or using Terraform
+cd gcp-org-policy
+terraform init
+terraform apply -var="organization_id=123456789012"
+```
+
+For detailed instructions, see [gcp-org-policy/README.md](gcp-org-policy/README.md)
+
+## What This Policy Does
+
+- **Restricts** all Compute Engine VM creation to N2D machine types only
+- **Enforces** compliance at the organization, folder, or project level
+- **Uses** Common Expression Language (CEL) condition: `resource.machineType.contains('/machineTypes/n2d')`
+- **Helps** with cost optimization and standardization
+
+---
+
 # Notes
 This postman collection is currently updated for version 1.9.0 of the TCGPlayer API.  When a new version come out this section will be updated and the collection will also be updated.
 
