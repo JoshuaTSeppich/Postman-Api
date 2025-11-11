@@ -2358,6 +2358,338 @@
 				"description": "Cancel a pending or scheduled manual payout. Only payouts that have not yet been processed can be cancelled. Requires a cancellation reason."
 			},
 			"response": []
+		},
+		{
+			"name": "Create Crypto Payout (Bitcoin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"if (typeof jsonResponse.results !== 'undefined' && jsonResponse.results.length > 0) {",
+							"    console.log('Bitcoin payout created successfully');",
+							"    console.log('Payout ID: ' + jsonResponse.results[0].payoutId);",
+							"    console.log('Transaction Hash: ' + jsonResponse.results[0].txHash);",
+							"    console.log('Status: ' + jsonResponse.results[0].status);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/crypto",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 0.015,\n\t\"currency\": \"BTC\",\n\t\"destination\": {\n\t\t\"type\": \"crypto_address\",\n\t\t\"address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n\t\t\"network\": \"bitcoin\",\n\t\t\"addressType\": \"bech32\",\n\t\t\"memo\": \"\"\n\t},\n\t\"payoutReason\": \"manual_crypto_settlement\",\n\t\"description\": \"Manual Bitcoin payout for weekly settlement\",\n\t\"metadata\": {\n\t\t\"period\": \"2025-11-04 to 2025-11-11\",\n\t\t\"orderCount\": 45,\n\t\t\"processedBy\": \"admin\",\n\t\t\"fiatEquivalent\": 1500.00,\n\t\t\"exchangeRate\": 100000.00,\n\t\t\"manualPayout\": true\n\t},\n\t\"priority\": \"high\",\n\t\"feeSettings\": {\n\t\t\"feeRate\": \"150\",\n\t\t\"rbfEnabled\": true\n\t},\n\t\"notifyRecipient\": true,\n\t\"notes\": \"Manual Bitcoin payout - HIGH PRIORITY with extra gas for near-immediate transfer (next block confirmation target)\"\n}"
+				},
+				"description": "Create a manual cryptocurrency payout using Bitcoin with HIGH PRIORITY gas settings for near-immediate transfers. Uses extra gas (150+ sat/vB) to ensure next block confirmation. Supports SegWit (bech32) and legacy address formats. RBF enabled for fee bumping if needed."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Crypto Payout (Ethereum)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"if (typeof jsonResponse.results !== 'undefined' && jsonResponse.results.length > 0) {",
+							"    console.log('Ethereum payout created successfully');",
+							"    console.log('Payout ID: ' + jsonResponse.results[0].payoutId);",
+							"    console.log('Transaction Hash: ' + jsonResponse.results[0].txHash);",
+							"    console.log('Gas Fee: ' + jsonResponse.results[0].gasFee);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/crypto",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 0.5,\n\t\"currency\": \"ETH\",\n\t\"destination\": {\n\t\t\"type\": \"crypto_address\",\n\t\t\"address\": \"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb\",\n\t\t\"network\": \"ethereum\",\n\t\t\"chainId\": 1,\n\t\t\"ensName\": \"\"\n\t},\n\t\"payoutReason\": \"manual_crypto_settlement\",\n\t\"description\": \"Manual Ethereum payout for weekly settlement\",\n\t\"metadata\": {\n\t\t\"period\": \"2025-11-04 to 2025-11-11\",\n\t\t\"orderCount\": 45,\n\t\t\"processedBy\": \"admin\",\n\t\t\"fiatEquivalent\": 1500.00,\n\t\t\"exchangeRate\": 3000.00,\n\t\t\"manualPayout\": true\n\t},\n\t\"gasSettings\": {\n\t\t\"priority\": \"high\",\n\t\t\"maxFeePerGas\": \"150\",\n\t\t\"maxPriorityFeePerGas\": \"10\",\n\t\t\"gasLimit\": \"21000\"\n\t},\n\t\"notifyRecipient\": true,\n\t\"notes\": \"Manual Ethereum payout - HIGH PRIORITY with extra gas (150 Gwei base + 10 Gwei priority) for near-immediate transfer (next block)\"\n}"
+				},
+				"description": "Create a manual cryptocurrency payout using Ethereum with HIGH PRIORITY gas settings for near-immediate transfers. Uses extra gas (150+ Gwei) to ensure next block inclusion. Supports ENS names. Chain ID 1 = Ethereum Mainnet, 137 = Polygon, 56 = BSC."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Crypto Payout (Stablecoin USDC)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"if (typeof jsonResponse.results !== 'undefined' && jsonResponse.results.length > 0) {",
+							"    console.log('USDC payout created successfully');",
+							"    console.log('Payout ID: ' + jsonResponse.results[0].payoutId);",
+							"    console.log('Transaction Hash: ' + jsonResponse.results[0].txHash);",
+							"    console.log('Network: ' + jsonResponse.results[0].network);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/crypto",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 1500.00,\n\t\"currency\": \"USDC\",\n\t\"destination\": {\n\t\t\"type\": \"crypto_address\",\n\t\t\"address\": \"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb\",\n\t\t\"network\": \"ethereum\",\n\t\t\"chainId\": 1,\n\t\t\"contractAddress\": \"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\"\n\t},\n\t\"payoutReason\": \"manual_crypto_settlement\",\n\t\"description\": \"Manual USDC stablecoin payout for weekly settlement\",\n\t\"metadata\": {\n\t\t\"period\": \"2025-11-04 to 2025-11-11\",\n\t\t\"orderCount\": 45,\n\t\t\"processedBy\": \"admin\",\n\t\t\"tokenStandard\": \"ERC-20\",\n\t\t\"manualPayout\": true\n\t},\n\t\"gasSettings\": {\n\t\t\"priority\": \"high\",\n\t\t\"maxFeePerGas\": \"150\",\n\t\t\"maxPriorityFeePerGas\": \"10\",\n\t\t\"gasLimit\": \"65000\"\n\t},\n\t\"notifyRecipient\": true,\n\t\"notes\": \"Manual USDC payout - HIGH PRIORITY with extra gas for near-immediate transfer. ERC-20 transfer requires ~65k gas limit.\"\n}"
+				},
+				"description": "Create a manual cryptocurrency payout using USDC stablecoin with HIGH PRIORITY gas for near-immediate transfers. Uses extra gas (150+ Gwei) to ensure next block inclusion. Supports multiple networks (Ethereum, Polygon, BSC). 1:1 USD value - no volatility risk."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Crypto Payout (USDT Tron)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"if (typeof jsonResponse.results !== 'undefined' && jsonResponse.results.length > 0) {",
+							"    console.log('USDT (TRC-20) payout created successfully');",
+							"    console.log('Payout ID: ' + jsonResponse.results[0].payoutId);",
+							"    console.log('Transaction Hash: ' + jsonResponse.results[0].txHash);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/crypto",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 1500.00,\n\t\"currency\": \"USDT\",\n\t\"destination\": {\n\t\t\"type\": \"crypto_address\",\n\t\t\"address\": \"TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE\",\n\t\t\"network\": \"tron\",\n\t\t\"tokenStandard\": \"TRC-20\",\n\t\t\"contractAddress\": \"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t\"\n\t},\n\t\"payoutReason\": \"manual_crypto_settlement\",\n\t\"description\": \"Manual USDT (TRC-20) payout - high priority for immediate transfer\",\n\t\"metadata\": {\n\t\t\"period\": \"2025-11-04 to 2025-11-11\",\n\t\t\"orderCount\": 45,\n\t\t\"processedBy\": \"admin\",\n\t\t\"networkBenefit\": \"Fast confirmation with premium energy\",\n\t\t\"manualPayout\": true\n\t},\n\t\"energySettings\": {\n\t\t\"energyLimit\": 100000,\n\t\t\"feelimit\": 200000000,\n\t\t\"priority\": \"high\"\n\t},\n\t\"notifyRecipient\": true,\n\t\"notes\": \"Manual USDT Tron payout - HIGH PRIORITY with extra energy (100k energy + 200 TRX fee limit) for near-immediate transfer (3-second blocks)\"\n}"
+				},
+				"description": "Create a manual cryptocurrency payout using USDT on Tron network (TRC-20) with HIGH PRIORITY energy settings for near-immediate transfers. Uses extra energy and fee limits to ensure fast confirmation. Tron has 3-second blocks, making it ideal for urgent payouts."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Crypto Payout Status",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/crypto/CRYPTO-PAYOUT-12345",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Get detailed status of a cryptocurrency payout including blockchain transaction hash, confirmation count, network fees, and current status. Use this to track payout progress on the blockchain."
+			},
+			"response": []
+		},
+		{
+			"name": "List Crypto Payouts",
+			"request": {
+				"url": {
+					"raw": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/crypto?currency=BTC&status=confirmed&limit=50&offset=0",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tcgplayer",
+						"com"
+					],
+					"path": [
+						"{{version}}",
+						"stores",
+						"{{storeKey}}",
+						"payouts",
+						"crypto"
+					],
+					"query": [
+						{
+							"key": "currency",
+							"value": "BTC",
+							"equals": true,
+							"description": "Filter by cryptocurrency: BTC, ETH, USDC, USDT, etc."
+						},
+						{
+							"key": "status",
+							"value": "confirmed",
+							"equals": true,
+							"description": "Filter by status: pending, broadcasted, confirmed, failed"
+						},
+						{
+							"key": "limit",
+							"value": "50",
+							"equals": true,
+							"description": "Number of results to return"
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"equals": true,
+							"description": "Offset for pagination"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Retrieve list of cryptocurrency payouts with filtering by currency type, status, and network. Returns transaction hashes, confirmation counts, and network fees."
+			},
+			"response": []
+		},
+		{
+			"name": "Validate Crypto Address",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/crypto/validate",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n\t\"currency\": \"BTC\",\n\t\"network\": \"bitcoin\"\n}"
+				},
+				"description": "Validate a cryptocurrency address before creating a payout. Checks address format, network compatibility, and prevents sending to invalid addresses. Returns validation status and address type."
+			},
+			"response": []
+		},
+		{
+			"name": "Estimate Crypto Payout Fee",
+			"request": {
+				"url": "https://api.tcgplayer.com/{{version}}/stores/{{storeKey}}/payouts/crypto/estimate-fee",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"description": ""
+					},
+					{
+						"key": "X-Tcg-Access-Token",
+						"value": "{{X-Tcg-Access-Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 0.015,\n\t\"currency\": \"BTC\",\n\t\"network\": \"bitcoin\",\n\t\"priority\": \"standard\"\n}"
+				},
+				"description": "Estimate network fees for a cryptocurrency payout before submitting. Returns fee estimates for different priority levels (low, standard, high) and approximate confirmation times."
+			},
+			"response": []
 		}
 	]
 }
